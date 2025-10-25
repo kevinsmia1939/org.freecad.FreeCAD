@@ -88,12 +88,10 @@ modules:
   - name: eigen
     buildsystem: cmake-ninja
     builddir: true
-    cleanup:
-      - '*'
     sources:
       - type: archive
-        url: https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.tar.bz2
-        sha256: 685adf14bd8e9c015b78097c1dc22f2f01343756f196acdc76a678e1ae352e11
+        url: https://gitlab.com/libeigen/eigen/-/archive/3.4.1/eigen-3.4.1.tar.bz2
+        sha256: 8bb7280b7551bf06418d11a9671fdf998cb927830cf21589b394382d26779821
 
   - name: graphviz
     sources:
@@ -705,6 +703,11 @@ modules:
       - -DPYSIDE_INCLUDE_DIR=/app/include/PySide6
       - -DINSTALL_TO_SITEPACKAGES=ON
       - -DFREECAD_USE_PYBIND11=ON
+      - -DEIGEN3_INCLUDE_DIR:PATH=/app/include/eigen3
+    run-tests: true                  # run tests after “install”
+    test-rule: Test                  # default for cmake-ninja, but being explicit is fine
+    test-commands:
+      - ctest --output-on-failure -j ${FLATPAK_BUILDER_N_JOBS}
     post-install:
       - install -Dm755 ../openscad.sh ${FLATPAK_DEST}/bin/openscad
       - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
@@ -713,10 +716,10 @@ modules:
       - ln -s /app/freecad/bin/FreeCAD /app/bin/freecad
     sources:
       - type: git
-        url: https://github.com/FreeCAD/FreeCAD.git
-        commit: 256fc7eff3379911ab5daf88e10182c509aa8052 # tag 1.0.2
-      - type: patch
-        path: patches/OpenSCAD_transfermechanism.patch
+        url: https://github.com/kevinsmia1939/FreeCAD.git
+        commit: b8026edc9bbfc9ddf5638bb4530dadad85660d44
+      # - type: patch
+      #   path: patches/OpenSCAD_transfermechanism.patch
       - type: file
         path: openscad.sh
       - type: shell
